@@ -1,4 +1,8 @@
+import 'package:ag/provider.dart';
+import 'package:ag/show_all/show_all.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class Explore extends StatelessWidget {
   const Explore({super.key});
@@ -6,6 +10,7 @@ class Explore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController textEditingController = TextEditingController();
+    var provider = Provider.of<MyAppProvider>(context);
     return Padding(
       padding: EdgeInsets.only(
           left: MediaQuery.sizeOf(context).width * 0.02,
@@ -47,34 +52,57 @@ class Explore extends StatelessWidget {
                 ),
                 suffixIcon: const Icon(Icons.close)),
           ),
-         const SizedBox(height: 24,),
+          const SizedBox(
+            height: 24,
+          ),
           Flexible(
             flex: 1,
             child: ListView.separated(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => Column(
-                      children: [
-                        SizedBox(
-                          width: 200,
-                          height: 120,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(60),
-                              child: Image.asset("assets/images/red_sea.jpeg")),
+                itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowAll(
+                                title: provider.seas[index].bodyModel.name,
+                                image: provider.seas[index].bodyModel.image,
+                                description: provider.seas[index].bodyModel.description,
+                              ),
+                            ));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        shape: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16.r),
+                            borderSide:
+                                const BorderSide(color: Colors.transparent)),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 200,
+                              height: 120,
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.r),
+                                  child:
+                                      Image.asset(provider.seas[index].bodyModel.image)),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              provider.seas[index].bodyModel.name,
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        const Text(
-                          "Red Sea",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                      ),
                     ),
                 separatorBuilder: (context, index) =>
                     SizedBox(width: MediaQuery.sizeOf(context).width * 0.03),
-                itemCount: 100),
+                itemCount: provider.seas.length),
           ),
           Flexible(
             flex: 3,
@@ -82,69 +110,76 @@ class Explore extends StatelessWidget {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              itemCount: 10,
-              itemBuilder: (context, listViewIndex) {
+              itemCount: provider.body.length,
+              itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 8),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          blurRadius: 8,
-                          color: Color(0x230F1113),
-                          offset: Offset(0, 4),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(0),
-                            bottomRight: Radius.circular(0),
-                            topLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShowAll(
+                              title: provider.body[index].name,
+                              image: provider.body[index].image,
+                              description: provider.body[index].description,
+                            ),
+                          ));
+                    },
+                    child: Card(
+                      elevation: 20,
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.r),
+                          borderSide:
+                              const BorderSide(color: Colors.transparent)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(0),
+                              bottomRight: Radius.circular(0),
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12),
+                            ),
+                            child: Image.asset(
+                              provider.body[index].image,
+                              width: double.infinity,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: Image.asset(
-                            'assets/images/turtle.jpg',
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Hawksbill Turtle',
-                                style: TextStyle(
-                                    color: Colors.lightBlue,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22),
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.sizeOf(context).width * 2),
-                                child: const Text(
-                                  maxLines: 3,
-                                  'Found in the tropical regions of all the world’s oceans, gulfs and seas, mostly in coral reefs, the Hawksbill Turtle’s population is estimated to have declined by 80% over the last century. The turtles are heavily trafficked for their colourful shells and eggs, even though the harvesting of eggs is banned. They are also threatened by the degradation of coral reef species on which they feed.',
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  provider.body[index].name,
+                                  style: const TextStyle(
+                                      color: Colors.lightBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(
+                                  height: 6,
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.sizeOf(context).width * 2),
+                                  child: Text(
+                                    maxLines: 3,
+                                    provider.body[index].description,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

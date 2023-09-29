@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../provider.dart';
+import '../show_all/show_all.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<MyAppProvider>(context);
     return Padding(
       padding: EdgeInsets.symmetric(
           vertical: MediaQuery.sizeOf(context).height * 0.06, horizontal: 12),
@@ -25,17 +32,56 @@ class HomePage extends StatelessWidget {
                   color: Colors.lightBlue),
             ),
           ),
-
           Flexible(
             child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, mainAxisSpacing: 30, crossAxisSpacing: 30),
-              itemBuilder: (context, index) => Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.lightBlue)),
-                child: const Center(
-                  child: Text("HI"),
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.vertical,
+              itemCount: provider.seas.length,
+              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(mainAxisExtent: MediaQuery.sizeOf(context).height * 0.25,
+                  crossAxisCount: 2, mainAxisSpacing: 35, crossAxisSpacing: 30),
+              itemBuilder: (context, index) => Card(
+                elevation: 20,
+                shape: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.r),
+                    borderSide: const BorderSide(color: Colors.transparent)),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShowAll(
+                              title: provider.seas[index].bodyModel.name,
+                              image: provider.seas[index].bodyModel.image,
+                              description:
+                                  provider.seas[index].bodyModel.description,
+                            ),
+                          ));
+                    },
+                    child: Column(
+                      children: [
+                        Container(
+                          constraints: BoxConstraints(
+                          maxHeight: MediaQuery.sizeOf(context).height * 0.15
+                          ),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15.r),
+                              child: Image.asset(
+                                  provider.seas[index].bodyModel.image,
+                                  fit: BoxFit.fill)),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.sizeOf(context).height * 0.04,
+                        ),
+                        Text(
+                          provider.seas[index].bodyModel.name,
+                          style: GoogleFonts.novaSquare(
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
